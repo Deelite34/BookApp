@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>Dodaj autorów</h2>
+<form action="" method="post">
+    {% csrf_token %}
+    {% for field in author_form %}
+      {{ field.label_tag }} {{ field }}
+    {% endfor %}
+    <input type="submit" value="Dodaj">
+  </form>
+
+<h2>Dodaj publikacje</h2>
+<form action="" method="post">
+    {% csrf_token %}
+    {% for field in publication_form %}
+      {{ field.label_tag }} {{ field }}
+    {% endfor %}
+    <input type="submit" value="Dodaj">
+  </form>
+
+<div>{{ result_message }}</div>
+
+</body>
+</html>

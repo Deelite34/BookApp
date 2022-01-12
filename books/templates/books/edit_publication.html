@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h2>Edytuj publikację</h2>
+<form action="" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      {{ field.label_tag }} {{ field }}
+    {% endfor %}
+    <input type="submit" value="Edytuj">
+  </form>
+
+<div>{{ result_message }}</div>
+
+</body>
+</html>

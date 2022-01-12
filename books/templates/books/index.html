@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <h1>Formularz wyszukiwania</h1>
+  <form action="" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      {{ field.label_tag }} {{ field }}
+    {% endfor %}
+    <input type="submit" value="Szukaj">
+  </form>
+  {% if form_date_error %}
+    {{ form_date_error }}
+  {% endif %}
+  <table>
+    <tr>
+      <th>Tytuł</th>
+      <th>Autor</th>
+      <th>Data publikacji</th>
+      <th>Nr. ISBN</th>
+      <th>Strony</th>
+      <th>Link do okładki</th>
+      <th>Język publikacji</th>
+      <th></th>
+      <th></th>
+    </tr>
+  {% for book in books %}
+    <tr>
+      <th>{{ book.title }}</th>
+      <th>{{ book.author.author }}</th>
+      <th>{{ book.publication_date }}</th>
+      <th>{{ book.isbn }}</th>
+      <th>{{ book.page_count }}</th>
+      <th>{{ book.book_cover }}</th>
+      <th>{{ book.language }}</th>
+
+      <th>
+        <form class="delete-item-form" action="{% url 'delete' book.id %}" method="POST">
+          {% csrf_token %}
+          <input class="trash-icon" type="submit" value="x"/>
+        </form>
+      </th>
+
+      <th>
+        <a href="{% url 'edit' book.id %}" class="edit-icon-container">
+            Edytuj
+
+        </a>
+      </th>
+
+    </tr>
+  {% endfor %}
+  </table>
+
+
+</body>
+</html>
