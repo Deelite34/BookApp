@@ -17,13 +17,20 @@ class Publication(models.Model):
     """
     Information about books specific publication.
     """
+    DATE_TYPES = [
+        ('Y', 'Tylko rok'),
+        ('m.Y', 'Miesiąc i rok '),
+        ('d.m.Y', 'Dzień, miesiąc, rok'),
+    ]
+
     title = models.CharField(max_length=500)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    publication_date = models.DateField()
-    isbn = models.PositiveBigIntegerField()
-    page_count = models.PositiveIntegerField()
-    book_cover = models.URLField(max_length=500)
-    language = models.CharField(max_length=100)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, null=True, blank=True)
+    publication_date = models.DateField(null=True, blank=True)
+    publication_date_type = models.CharField(choices=DATE_TYPES, max_length=50)
+    isbn = models.CharField(null=True, blank=True, max_length=20)
+    page_count = models.PositiveIntegerField(null=True, blank=True)
+    book_cover = models.URLField(max_length=500, null=True, blank=True)
+    language = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return f"{self.title}"

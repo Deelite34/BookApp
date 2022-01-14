@@ -1,0 +1,84 @@
+{% extends 'books/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<h1>Import książek</h1>
+<form action="{% url 'import' %}" method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    {{ field.label_tag }} {{ field }}
+    {% endfor %}
+    <input type="submit" value="Szukaj">
+</form>
+
+{% if result_message %}
+<p>{{ result_message }}</p>
+{% endif %}
+
+<table>
+    <tr>
+        <th>Tytuł</th>
+        <th>Autor</th>
+        <th>Data publikacji</th>
+        <th>Nr. ISBN</th>
+        <th>Strony</th>
+        <th>Link do okładki</th>
+        <th>Język publikacji</th>
+        <th></th>
+        <th></th>
+    </tr>
+    {% for book in found_books %}
+    <tr>
+        <th>
+          {% if not book.title or book.title == 'None' %}
+             Brak danych
+          {% else %} {{ book.title }} {% endif %}
+        </th>
+        <th>
+          {% if not book.author or book.author == 'None' %}
+             Brak danych
+          {% else %} {{book.author}} {% endif %}
+        </th>
+        <th>
+          {% if not book.publication_date or book.publication_date == 'None' %}
+             Brak danych
+          {% else %} {{ book.publication_date }} {% endif %}
+        </th>
+         <th>
+          {% if not book.isbn or book.isbn == 'None' %}
+             Brak danych
+          {% else %} {{ book.isbn }} {% endif %}
+        </th>
+        <th>
+          {% if not book.page_count or book.page_count == 'None' %}
+             Brak danych
+          {% else %} {{ book.page_count }} {% endif %}
+        </th>
+        <th>
+          {% if not book.book_cover or book.book_cover == 'None' %}
+             Brak danych
+          {% else %}{{ book.book_cover }}{% endif %}
+        </th>
+        <th>
+          {% if not book.language or book.language == 'None' %}
+             Brak danych
+          {% else %} {{ book.language }} {% endif %}
+        </th>
+        <th>
+            <a href="{% url 'import_book' book.title book.author book.publication_date book.isbn book.page_count book.book_cover book.language %}"
+               class="edit-icon-container">
+                Dodaj
+            </a>
+        </th>
+        <th>
+            <form action="{% url 'import_book' book.title book.author book.publication_date book.isbn book.page_count book.book_cover book.language %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="x"/>
+            </form>
+        </th>
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock content %}

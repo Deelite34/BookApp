@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'books/base.html' %}
+
+{% block content %}
   <h1>Formularz wyszukiwania</h1>
   <form action="" method="post">
     {% csrf_token %}
@@ -30,14 +26,41 @@
     </tr>
   {% for book in books %}
     <tr>
-      <th>{{ book.title }}</th>
-      <th>{{ book.author.author }}</th>
-      <th>{{ book.publication_date }}</th>
-      <th>{{ book.isbn }}</th>
-      <th>{{ book.page_count }}</th>
-      <th>{{ book.book_cover }}</th>
-      <th>{{ book.language }}</th>
-
+      <th>
+          {% if not book.title or book.title == 'None' %}
+             Brak danych
+          {% else %} {{ book.title }} {% endif %}
+      </th>
+      <th>
+          {% if not book.author.author or book.author.author == 'None' %}
+             Brak danych
+          {% else %} {{book.author.author}} {% endif %}
+      </th>
+      <th>
+          {% if not book.publication_date or book.publication_date == 'None' %}
+             Brak danych
+          {% else %} {{ book.publication_date|date:book.publication_date_type}} {% endif %}
+      </th>
+      <th>
+          {% if not book.isbn or book.isbn == 'None' %}
+             Brak danych
+          {% else %} {{ book.isbn }} {% endif %}
+      </th>
+      <th>
+          {% if not book.page_count or book.page_count == 'None' %}
+             Brak danych
+          {% else %} {{ book.page_count }} {% endif %}
+      </th>
+      <th>
+          {% if not book.book_cover or book.book_cover == 'None' %}
+             Brak danych
+          {% else %}{{ book.book_cover }}{% endif %}
+      </th>
+      <th>
+          {% if not book.language or book.language == 'None' %}
+             Brak danych
+          {% else %} {{ book.language }} {% endif %}
+      </th>
       <th>
         <form class="delete-item-form" action="{% url 'delete' book.id %}" method="POST">
           {% csrf_token %}
@@ -48,7 +71,6 @@
       <th>
         <a href="{% url 'edit' book.id %}" class="edit-icon-container">
             Edytuj
-
         </a>
       </th>
 
@@ -56,6 +78,4 @@
   {% endfor %}
   </table>
 
-
-</body>
-</html>
+{% endblock content %}

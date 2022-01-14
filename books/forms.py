@@ -1,5 +1,5 @@
 from django import forms
-
+from django.utils.translation import gettext_lazy as _
 from .models import Author, Publication
 
 form_date_errors = {'invalid': 'Podaj datę w formacie dzień.miesiąc.rok'}
@@ -24,10 +24,45 @@ class AuthorForm(forms.ModelForm):
     class Meta:
         model = Author
         fields = ['author']
+        labels = {
+            'author': _('Autor'),
+        }
 
 
 class PublicationForm(forms.ModelForm):
     class Meta:
         model = Publication
-        fields = ['title', 'author', 'publication_date', 'isbn', 'page_count', 'book_cover', 'language']
+        fields = ['title', 'author', 'publication_date', 'publication_date_type',
+                  'isbn', 'page_count', 'book_cover', 'language']
+        labels = {
+            'title': _('Tytuł'),
+            'author': _('Autor'),
+            'publication_date': _('Date publikacji'),
+            'publication_date_type': _('Format wpisanej daty'),
+            'isbn': _('Nr. ISBN'),
+            'page_count': _('Ilość stron'),
+            'book_cover': _('Link do okładki'),
+            'language': _('Kod języka'),
+        }
+
+
+class SearchForImportBookForm(forms.Form):
+    q = forms.CharField(label="Słowa kluczowe", required=True, max_length=500,
+                        widget=forms.TextInput(attrs={'class': 'search-form-title'}))
+    intitle = forms.CharField(label="Tytuł", required=False, max_length=500,
+                              widget=forms.TextInput(attrs={'class': 'search-form-title'}))
+    inauthor = forms.CharField(label="Autor", required=False, max_length=100,
+                               widget=forms.TextInput(attrs={'class': 'search-form-author'}))
+    inpublisher = forms.CharField(label="Wydawca", required=False, max_length=100,
+                                  widget=forms.TextInput(attrs={'class': 'search-form-author'}))
+    subject = forms.CharField(label="Tematyka", required=False, max_length=100,
+                              widget=forms.TextInput(attrs={'class': 'search-form-author'}))
+    isbn = forms.IntegerField(label="Numer ISBN", required=False,
+                              widget=forms.TextInput(attrs={'class': 'search-form-author'}))
+    lccn = forms.IntegerField(label="Numer LCCN", required=False,
+                              widget=forms.TextInput(attrs={'class': 'search-form-author'}))
+    aclc = forms.IntegerField(label="Numer ACLC", required=False,
+                              widget=forms.TextInput(attrs={'class': 'search-form-author'}))
+
+
 
