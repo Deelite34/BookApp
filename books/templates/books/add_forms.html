@@ -1,24 +1,85 @@
 {% extends 'books/base.html' %}
+{% load widget_tweaks %}
+
 {% block content %}
-<h2>Dodaj autorów</h2>
-<form action="" method="post">
-    {% csrf_token %}
-    {% for field in author_form %}
-    {{ field.label_tag }} {{ field }}
-    {% endfor %}
-    <input type="submit" value="Dodaj">
-</form>
+<h2 class="mx-auto w-50 text-center">Dodawanie autorów</h2>
+<div class="w-75 text-center mx-auto">
+    <form action="" method="post">
+        {% csrf_token %}
+        {% for field in author_form.visible_fields %}
+        <label class="col-sm-0 col-form-label" for="{{ field.id_for_label }}">{{ field.label_tag }}</label>
+        {{ field|add_class:'col-sm-4 mx-2' }}
+        {% for error in field.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+        {% endfor %}
+        <input class="btn-success" type="submit" value="Dodaj">
+    </form>
+</div>
 
-<h2>Dodaj publikację</h2>
-<form action="" method="post">
-    {% csrf_token %}
-    {% for field in publication_form %}
-    {{ field.label_tag }} {{ field }}
-    {% endfor %}
-    <input type="submit" value="Dodaj">
-</form>
+<h2 class="mx-auto my-3 w-50 text-center">Dodawanie publikacji</h2>
+<div class="w-75 mx-auto text-center">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3" for="{{ publication_form.title.id_for_label }}">
+                    {{ publication_form.title.label_tag }}</label>
+                {% render_field publication_form.title %}
+            </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3" for="{{ publication_form.author.id_for_label }}">
+                    {{ publication_form.author.label_tag }}</label>
+                {% render_field publication_form.author %}
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3" for="{{ publication_form.publication_date.id_for_label }}">
+                    {{ publication_form.publication_date.label_tag }}</label>
+                {% render_field publication_form.publication_date %}
+            </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ publication_form.publication_date_type.id_for_label }}">
+                    {{ publication_form.publication_date_type.label_tag }}</label>
+                {% render_field publication_form.publication_date_type %}
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3" for="{{ publication_form.isbn.id_for_label }}">
+                    {{ publication_form.isbn.label_tag }}</label>
+                {% render_field publication_form.isbn %}
+            </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3" for="{{ publication_form.page_count.id_for_label }}">
+                    {{ publication_form.page_count.label_tag }}</label>
+                {% render_field publication_form.page_count %}
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3" for="{{ publication_form.book_cover.id_for_label }}">
+                    {{ publication_form.book_cover.label_tag }}</label>
+                {% render_field publication_form.book_cover %}
+            </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3" for="{{ publication_form.language.id_for_label }}">
+                    {{ publication_form.language.label_tag }}</label>
+                {% render_field publication_form.language %}
+            </div>
+        </div>
+        {% for field in publication_form.visible_fields %}
+        {% for error in field.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+        {% endfor %}
 
-<div>{{ result_message }}</div>
+        <input class="btn btn-success w-25 my-4" type="submit" value="Dodaj">
+    </form>
+</div>
+<div class="text-center">{{ result_message }}</div>
 
 {% endblock content %}
 

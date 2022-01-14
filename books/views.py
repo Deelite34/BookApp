@@ -2,7 +2,7 @@ from datetime import datetime
 
 import requests
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
 
@@ -254,8 +254,6 @@ class ImportSingleBookView(View):
     def post(self, request, book_title, book_author, book_publication_date, book_isbn, book_page_count, book_cover,
              book_language):
         form = SearchForImportBookForm()
-        print("FORMULARZ IMPORTSINGLEBOOKVIEW")
-        print("ZNANY PAGE COUNT:", book_page_count)
         if book_author:
             try:
                 author = Author.objects.get(author=book_author)

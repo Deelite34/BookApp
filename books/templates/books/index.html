@@ -1,81 +1,96 @@
 {% extends 'books/base.html' %}
+{% load widget_tweaks %}
 
 {% block content %}
-  <h1>Formularz wyszukiwania</h1>
-  <form action="{% url 'index' %}" method="post">
-    {% csrf_token %}
-    {% for field in form %}
-      {{ field.label_tag }} {{ field }}
+<h2 class="mx-auto w-50 text-center">Wyszukiwanie książek</h2>
+<div class="w-75 text-center mx-auto">
+    <form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+        <div class="form-group row my-3">
+            <label class="col-sm-3 col-form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field|add_class:'col-sm-7' }}
+            {% for error in field.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        <input class="btn btn-primary" type="submit" value="Szukaj">
+    </form>
+</div>
+
+{% if form_date_error %}
+{{ form_date_error }}
+{% endif %}
+
+
+<table class="table text-center my-5 mx-auto w-75 table-striped table-bordered">
+    <thead>
+    <tr class="align-middle">
+        <th scope="col">Tytuł</th>
+        <th scope="col">Autor</th>
+        <th scope="col">Data publikacji</th>
+        <th scope="col">Nr. ISBN</th>
+        <th scope="col">Strony</th>
+        <th scope="col">Link do okładki</th>
+        <th scope="col">Język publikacji</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody class="small">
+    {% for book in books %}
+    <tr class="align-middle">
+        <td scope="row">
+            {% if not book.title or book.title == 'None' %}
+            Brak danych
+            {% else %} {{ book.title }} {% endif %}
+        </td>
+        <td>
+            {% if not book.author.author or book.author.author == 'None' %}
+            Brak danych
+            {% else %} {{book.author.author}} {% endif %}
+        </td>
+        <td>
+            {% if not book.publication_date or book.publication_date == 'None' %}
+            Brak danych
+            {% else %} {{ book.publication_date|date:book.publication_date_type}} {% endif %}
+        </td>
+        <td>
+            {% if not book.isbn or book.isbn == 'None' %}
+            Brak danych
+            {% else %} {{ book.isbn }} {% endif %}
+        </td>
+        <td>
+            {% if not book.page_count or book.page_count == 'None' %}
+            Brak danych
+            {% else %} {{ book.page_count }} {% endif %}
+        </td>
+        <td>
+            {% if not book.book_cover or book.book_cover == 'None' %}
+            Brak danych
+            {% else %}<a href="{{ book.book_cover }}">{{book.book_cover}}</a>{% endif %}
+        </td>
+        <td>
+            {% if not book.language or book.language == 'None' %}
+            Brak danych
+            {% else %} {{ book.language }} {% endif %}
+        </td>
+        <td>
+            <form action="{% url 'delete' book.id %}" method="POST">
+                {% csrf_token %}
+                <input class="btn btn-danger" type="submit" value="Usuń"/>
+            </form>
+        </td>
+        <td>
+            <a href="{% url 'edit' book.id %}" class="edit-icon-container">
+                <button class="btn btn-secondary">Edytuj</button>
+            </a>
+        </td>
+    </tr>
+
     {% endfor %}
-    <input type="submit" value="Szukaj">
-  </form>
-  {% if form_date_error %}
-    {{ form_date_error }}
-  {% endif %}
-  <table>
-    <tr>
-      <th>Tytuł</th>
-      <th>Autor</th>
-      <th>Data publikacji</th>
-      <th>Nr. ISBN</th>
-      <th>Strony</th>
-      <th>Link do okładki</th>
-      <th>Język publikacji</th>
-      <th></th>
-      <th></th>
-    </tr>
-  {% for book in books %}
-    <tr>
-      <th>
-          {% if not book.title or book.title == 'None' %}
-             Brak danych
-          {% else %} {{ book.title }} {% endif %}
-      </th>
-      <th>
-          {% if not book.author.author or book.author.author == 'None' %}
-             Brak danych
-          {% else %} {{book.author.author}} {% endif %}
-      </th>
-      <th>
-          {% if not book.publication_date or book.publication_date == 'None' %}
-             Brak danych
-          {% else %} {{ book.publication_date|date:book.publication_date_type}} {% endif %}
-      </th>
-      <th>
-          {% if not book.isbn or book.isbn == 'None' %}
-             Brak danych
-          {% else %} {{ book.isbn }} {% endif %}
-      </th>
-      <th>
-          {% if not book.page_count or book.page_count == 'None' %}
-             Brak danych
-          {% else %} {{ book.page_count }} {% endif %}
-      </th>
-      <th>
-          {% if not book.book_cover or book.book_cover == 'None' %}
-             Brak danych
-          {% else %}{{ book.book_cover }}{% endif %}
-      </th>
-      <th>
-          {% if not book.language or book.language == 'None' %}
-             Brak danych
-          {% else %} {{ book.language }} {% endif %}
-      </th>
-      <th>
-        <form class="delete-item-form" action="{% url 'delete' book.id %}" method="POST">
-          {% csrf_token %}
-          <input class="trash-icon" type="submit" value="Usuń"/>
-        </form>
-      </th>
-
-      <th>
-        <a href="{% url 'edit' book.id %}" class="edit-icon-container">
-            <button>Edytuj</button>
-        </a>
-      </th>
-
-    </tr>
-  {% endfor %}
-  </table>
+    </tbody>
+</table>
 
 {% endblock content %}

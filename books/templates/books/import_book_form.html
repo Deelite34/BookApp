@@ -2,77 +2,150 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<h1>Import książek</h1>
+<h2 class="mx-auto w-50 text-center">Import książek</h2>
 <form action="{% url 'import' %}" method="post">
     {% csrf_token %}
-    {% for field in form %}
-    {{ field.label_tag }} {{ field }}
-    {% endfor %}
-    <input type="submit" value="Szukaj">
+    <div class="w-75 mx-auto text-center">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-group row my-2">
+                <div class="col">
+                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.q.id_for_label }}">
+                        {{ form.q.label_tag }}</label>
+                    {% render_field form.q %}
+                </div>
+                <div class="col">
+                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.intitle.id_for_label }}">
+                        {{ form.intitle.label_tag }}</label>
+                    {% render_field form.intitle %}
+                </div>
+            </div>
+            <div class="form-group row my-2">
+                <div class="col">
+                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.inauthor.id_for_label }}">
+                        {{ form.inauthor.label_tag }}</label>
+                    {% render_field form.inauthor %}
+                </div>
+                <div class="col">
+                    <label class="col-sm-4 col-form-label mx-3"
+                           for="{{ form.inpublisher.id_for_label }}">
+                        {{ form.inpublisher.label_tag }}</label>
+                    {% render_field form.inpublisher %}
+                </div>
+            </div>
+            <div class="form-group row my-2">
+                <div class="col">
+                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.subject.id_for_label }}">
+                        {{ form.subject.label_tag }}</label>
+                    {% render_field form.subject %}
+                </div>
+                <div class="col">
+                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.isbn.id_for_label }}">
+                        {{ form.isbn.label_tag }}</label>
+                    {% render_field form.isbn %}
+                </div>
+            </div>
+            <div class="form-group row my-2">
+                <div class="col">
+                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.lccn.id_for_label }}">
+                        {{ form.lccn.label_tag }}</label>
+                    {% render_field form.lccn %}
+                </div>
+                <div class="col">
+                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.aclc.id_for_label }}">
+                        {{ form.aclc.label_tag }}</label>
+                    {% render_field form.aclc %}
+                </div>
+            </div>
+            {% for field in form.visible_fields %}
+            {% for error in field.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+            {% endfor %}
+
+            <input class="btn btn-primary w-25 my-4" type="submit" value="Szukaj">
+        </form>
+    </div>
 </form>
 
+
+
+
+
+
+
+
+
+
+
+
 {% if result_message %}
-<p>{{ result_message }}</p>
+<div class="text-center">{{ result_message }}</div>
 {% endif %}
 
-<table>
-    <tr>
-        <th>Tytuł</th>
-        <th>Autor</th>
-        <th>Data publikacji</th>
-        <th>Nr. ISBN</th>
-        <th>Strony</th>
-        <th>Link do okładki</th>
-        <th>Język publikacji</th>
-        <th></th>
-        <th></th>
+<table class="table text-center my-5 mx-auto w-75 table-striped table-bordered">
+    <thead>
+    <tr class="align-middle">
+        <th scope="col">Tytuł</th>
+        <th scope="col">Autor</th>
+        <th scope="col">Data publikacji</th>
+        <th scope="col">Nr. ISBN</th>
+        <th scope="col">Strony</th>
+        <th scope="col">Link do okładki</th>
+        <th scope="col">Język publikacji</th>
+        <th scope="col"></th>
     </tr>
+    </thead>
+    <tbody class="small">
     {% for book in found_books %}
-    <tr>
-        <th>
-          {% if not book.title or book.title == 'None' %}
-             Brak danych
-          {% else %} {{ book.title }} {% endif %}
-        </th>
-        <th>
-          {% if not book.author or book.author == 'None' %}
-             Brak danych
-          {% else %} {{book.author}} {% endif %}
-        </th>
+    <tr class="align-middle">
+        <td scope="row">
+            {% if not book.title or book.title == 'None' %}
+            Brak danych
+            {% else %} {{ book.title }} {% endif %}
+        </td>
+        <td>
+            {% if not book.author.author or book.author.author == 'None' %}
+            Brak danych
+            {% else %} {{book.author.author}} {% endif %}
+        </td>
         <th>
           {% if not book.publication_date or book.publication_date == 'None' %}
              Brak danych
           {% else %} {{ book.publication_date }} {% endif %}
         </th>
-         <th>
-          {% if not book.isbn or book.isbn == 'None' %}
-             Brak danych
-          {% else %} {{ book.isbn }} {% endif %}
-        </th>
-        <th>
-          {% if not book.page_count or book.page_count == 'None' %}
-             Brak danych
-          {% else %} {{ book.page_count }} {% endif %}
-        </th>
-        <th>
-          {% if not book.book_cover or book.book_cover == 'None' %}
-             Brak danych
-          {% else %}{{ book.book_cover }}{% endif %}
-        </th>
-        <th>
-          {% if not book.language or book.language == 'None' %}
-             Brak danych
-          {% else %} {{ book.language }} {% endif %}
-        </th>
-        <th>
+        <td>
+            {% if not book.isbn or book.isbn == 'None' %}
+            Brak danych
+            {% else %} {{ book.isbn }} {% endif %}
+        </td>
+        <td>
+            {% if not book.page_count or book.page_count == 'None' %}
+            Brak danych
+            {% else %} {{ book.page_count }} {% endif %}
+        </td>
+        <td>
+            {% if not book.book_cover or book.book_cover == 'None' %}
+            Brak danych
+            {% else %}<a href="{{ book.book_cover }}">{{book.book_cover}}</a>{% endif %}
+        </td>
+        <td>
+            {% if not book.language or book.language == 'None' %}
+            Brak danych
+            {% else %} {{ book.language }} {% endif %}
+        </td>
+        <td>
             <form action="{% url 'import_book' book.title book.author book.publication_date book.isbn book.page_count book.book_cover book.language %}" method="POST">
                 {% csrf_token %}
-                <input type="submit" value="Dodaj"/>
+                <input class="btn btn-success" type="submit" value="Dodaj"/>
             </form>
-        </th>
+        </td>
     </tr>
+
     {% endfor %}
+    </tbody>
 </table>
 
 
 {% endblock content %}
+

@@ -9,7 +9,7 @@ def validate_publication_date(date):
     Ensure that inputed date does not represent future.
     :param date: datetime.datetime object
     """
-    current_date = datetime.datetime.now()
+    current_date = datetime.datetime.now().date()
     if date > current_date:
         raise ValidationError(
             _('%(value)s Data publikacji nie może być w przyszłości!'),

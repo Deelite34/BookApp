@@ -37,8 +37,8 @@ class PublicationForm(forms.ModelForm):
         labels = {
             'title': _('Tytuł'),
             'author': _('Autor'),
-            'publication_date': _('Date publikacji'),
-            'publication_date_type': _('Format wpisanej daty'),
+            'publication_date': _('Data publikacji'),
+            'publication_date_type': _('Format daty'),
             'isbn': _('Nr. ISBN'),
             'page_count': _('Ilość stron'),
             'book_cover': _('Link do okładki'),
