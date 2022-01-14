@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1>Formularz wyszukiwania</h1>
-  <form action="" method="post">
+  <form action="{% url 'index' %}" method="post">
     {% csrf_token %}
     {% for field in form %}
       {{ field.label_tag }} {{ field }}
@@ -64,13 +64,13 @@
       <th>
         <form class="delete-item-form" action="{% url 'delete' book.id %}" method="POST">
           {% csrf_token %}
-          <input class="trash-icon" type="submit" value="x"/>
+          <input class="trash-icon" type="submit" value="Usuń"/>
         </form>
       </th>
 
       <th>
         <a href="{% url 'edit' book.id %}" class="edit-icon-container">
-            Edytuj
+            <button>Edytuj</button>
         </a>
       </th>
 

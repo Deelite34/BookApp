@@ -8,9 +8,9 @@ form_date_errors = {'invalid': 'Podaj datę w formacie dzień.miesiąc.rok'}
 class PublicationSearchForm(forms.Form):
     title = forms.CharField(label="Tytuł", required=False, max_length=500,
                             widget=forms.TextInput(attrs={'class': 'search-form-title'}))
-    author = forms.CharField(label="Autor", required=False, max_length=100,
+    author = forms.CharField(label="Autor", required=False, max_length=200,
                              widget=forms.TextInput(attrs={'class': 'search-form-author'}))
-    language = forms.CharField(label="Język", required=False, max_length=100,
+    language = forms.CharField(label="Język", required=False, max_length=10,
                                widget=forms.TextInput(attrs={'class': 'search-form-language'}))
     published_from = forms.DateField(label="Opublikowana od",
                                      error_messages=form_date_errors, required=False,
@@ -45,6 +45,13 @@ class PublicationForm(forms.ModelForm):
             'language': _('Kod języka'),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(PublicationForm, self).__init__(*args, **kwargs)
+        self.fields['author'].required = True
+        self.fields['publication_date'].required = True
+        self.fields['isbn'].required = True
+        self.fields['language'].required = True
+
 
 class SearchForImportBookForm(forms.Form):
     q = forms.CharField(label="Słowa kluczowe", required=True, max_length=500,
@@ -63,6 +70,3 @@ class SearchForImportBookForm(forms.Form):
                               widget=forms.TextInput(attrs={'class': 'search-form-author'}))
     aclc = forms.IntegerField(label="Numer ACLC", required=False,
                               widget=forms.TextInput(attrs={'class': 'search-form-author'}))
-
-
-

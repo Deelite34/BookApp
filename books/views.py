@@ -19,8 +19,6 @@ class ListPublicationsView(View):
         """
         form = PublicationSearchForm()
         books = Publication.objects.select_related('author')
-        for book in books:
-            print('format:', book.publication_date_type)
 
         context = {'books': books, 'form': form}
         return render(request, 'books/index.html', context=context)
@@ -63,7 +61,6 @@ class ListPublicationsView(View):
         context = {'books': books, 'form': form}
 
         # Add helpful informations about form errors to context
-
         if form_date_errors['invalid'] in str(form.errors):
             error_string = "Błąd: data powinna używać formatu [dzień].[miesiąc].[rok] " \
                            "na przykład: 23.02.2015"
@@ -93,20 +90,25 @@ class CreateFormsView(View):
         """
         author_form = AuthorForm()
         publication_form = PublicationForm()
-        publication_form_fields = ('title', 'author', 'publication_date',
-                                   'isbn', 'page_cound', 'book_cover', 'language')
+        expected_publication_form_fields = ('title', 'author', 'publication_date', 'publication_date_type',
+                                            'isbn', 'page_count', 'book_cover', 'language')
+        # for f in publication_form_fields:
+        #    if f in request.POST.keys():
+        #        return False
 
-        if 'author' in request.POST.keys():
+        if 'author' in request.POST.keys() and len(request.POST.keys()) == 2:
             form = author_form = AuthorForm(request.POST)
-        elif all(field in publication_form_fields for field in request.POST.keys()):
+        elif all(field in request.POST.keys() for field in expected_publication_form_fields):
             form = publication_form = PublicationForm(request.POST)
         else:
+            # TODO
             return HttpResponse("<p>błąd: Otrzymano nieoczekiwany formularz.</p>")
 
-        result_message = None
         if form.is_valid():
             result_message = "Operacja zakończona sukcesem."
             form.save()
+        else:
+            result_message = form.errors
 
         context = {
             'author_form': author_form,
@@ -183,39 +185,23 @@ class ImportView(View):
             response_dict = response.json()
 
             # No books were found, and response wont contain 'items' key
-            if not 'items' in response_dict.keys():
+            if 'items' not in response_dict.keys():
                 return render(request, 'books/import_book_form.html', {'form': form})
             found_books = []
 
             for item in response_dict['items']:
                 title = item['volumeInfo']['title']
-                # Possible TODO: authors model have many to many relation with publications
-                # TODO abide by DRY principle in code below
                 try:
                     author = ", ".join(item['volumeInfo']['authors'])
                 except KeyError:
                     author = None
-                try:
-                    publication_date = item['volumeInfo']['publishedDate']
-                except KeyError:
-                    publication_date = None
-                try:
-                    isbn = item['volumeInfo']['industryIdentifiers'][0]['identifier']
-                except KeyError:
-                    isbn = None
-                try:
-                    page_count = item['volumeInfo']['pageCount']
-                except KeyError:
-                    page_count = None
-                try:
-                    book_cover = item['volumeInfo']['imageLinks']['thumbnail']
-                except KeyError:
-                    book_cover = None
-                try:
-                    language = item['volumeInfo']['language']
-                except KeyError:
-                    language = None
-                print("Found book:", title, author, publication_date, isbn, page_count, book_cover, language)
+
+                publication_date = self.get_value_or_none(item, ['volumeInfo', 'publishedDate'])
+                isbn = self.get_value_or_none(item, ['volumeInfo', 'industryIdentifiers', 0, 'identifier'])
+                page_count = self.get_value_or_none(item, ['volumeInfo', 'pageCount'])
+                book_cover = self.get_value_or_none(item, ['volumeInfo', 'imageLinks', 'thumbnail'])
+                language = self.get_value_or_none(item, ['volumeInfo', 'language'])
+
                 found_books.append(
                     {
                         'title': title,
@@ -227,11 +213,17 @@ class ImportView(View):
                         'language': language
                     }
                 )
-
-        # TODO przycisk dodaj wszystkie znalezione ksiazki
-
         context = {'form': form, 'found_books': found_books}
         return render(request, 'books/import_book_form.html', context)
+
+    def get_value_or_none(self, source_dict, params):
+        output = source_dict
+        for param in params:
+            try:
+                output = output[param]
+            except KeyError:
+                return None
+        return output
 
     def append_to_url_query(self, form, key, query_string, q=False):
         """
@@ -262,30 +254,23 @@ class ImportSingleBookView(View):
     def post(self, request, book_title, book_author, book_publication_date, book_isbn, book_page_count, book_cover,
              book_language):
         form = SearchForImportBookForm()
-        print(book_title, book_author, book_publication_date, book_isbn,
-              book_page_count, book_cover, book_language)
-
+        print("FORMULARZ IMPORTSINGLEBOOKVIEW")
+        print("ZNANY PAGE COUNT:", book_page_count)
         if book_author:
             try:
                 author = Author.objects.get(author=book_author)
             except Author.DoesNotExist:
                 author = Author.objects.create(author=book_author)
 
-        # TODO oczekiwana data to rok, miesiąc i dzień
-        # TODO co robić jak otrzymana z api data ma tylko rok lub tylko rok i miesiąc?
         parsed = self.check_date_format(book_publication_date)
         date_correct_format, date_filter_format = parsed[0], parsed[1]
-        print('aaaaaaaaaaaaaaa')
-        print(date_correct_format, date_filter_format)
-        print(book_publication_date)
-        # TODO FILTROWANIE DATY/USTALENIE FORMATU DATY/ZAPISANIE TYPU DATY W MODELU
 
         Publication.objects.create(title=book_title,
                                    author=author,
                                    publication_date=date_correct_format,
                                    publication_date_type=date_filter_format,
                                    isbn=book_isbn,
-                                   page_count=int(book_page_count) if type(book_page_count) is int else None,
+                                   page_count=None if book_page_count == 'None' else book_page_count,
                                    book_cover=book_cover,
                                    language=book_language)
 
@@ -295,31 +280,23 @@ class ImportSingleBookView(View):
 
     def check_date_format(self, input_date):
         """
-        Attempts to detect date format in one of few expected formats.
+        Attempts to detect date format and create datetime object, in one of few expected formats.
         If no format is correct, it returns None
-        :param input_date: date in string format#TODO
-        :return date: datetime.datetime object created from parsed input_date#TODO
+        :param input_date: date in string format
+        :return date: list, where first element is converted date, a datetime.datetime object
+                      , second element is date format to be used for date filter in the template.
         """
-
         possible_formats = {
             '%Y-%m-%d': 'd.m.Y',
             '%Y-%m': 'm.Y',
             '%Y': 'Y'
         }
-        print("W FUNKCJI:")
-        print(input_date)
-        print(type(input_date))
-        #time_string = datetime.strptime(input_date, '%Y-%m')
-
 
         for possible_format in possible_formats.keys():
             try:
                 date = datetime.strptime(input_date, possible_format)
-                print(f"PRZYDZIELONO DATE:{date}")
             except ValueError:
                 pass
             else:
-                print(f'WYKRYTY FORMAT DATY: {possible_format} CZYLI {possible_formats[possible_format]}')
                 return [date, possible_formats[possible_format]]
         return None
-

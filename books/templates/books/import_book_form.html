@@ -65,15 +65,9 @@
           {% else %} {{ book.language }} {% endif %}
         </th>
         <th>
-            <a href="{% url 'import_book' book.title book.author book.publication_date book.isbn book.page_count book.book_cover book.language %}"
-               class="edit-icon-container">
-                Dodaj
-            </a>
-        </th>
-        <th>
             <form action="{% url 'import_book' book.title book.author book.publication_date book.isbn book.page_count book.book_cover book.language %}" method="POST">
                 {% csrf_token %}
-                <input type="submit" value="x"/>
+                <input type="submit" value="Dodaj"/>
             </form>
         </th>
     </tr>
