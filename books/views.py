@@ -7,6 +7,7 @@ from django.views import View
 
 from .forms import form_date_errors, PublicationSearchForm, AuthorForm, PublicationForm, SearchForImportBookForm
 from .models import Publication, Author
+from .utils import check_date_format, append_to_url_query
 
 
 class ListPublicationsView(View):
@@ -91,23 +92,20 @@ class CreateFormsView(View):
         publication_form = PublicationForm()
         expected_publication_form_fields = ('title', 'author', 'publication_date', 'publication_date_type',
                                             'isbn', 'page_count', 'book_cover', 'language')
-        # for f in publication_form_fields:
-        #    if f in request.POST.keys():
-        #        return False
+        result_message = ""
 
         if 'author' in request.POST.keys() and len(request.POST.keys()) == 2:
             form = author_form = AuthorForm(request.POST)
         elif all(field in request.POST.keys() for field in expected_publication_form_fields):
             form = publication_form = PublicationForm(request.POST)
         else:
-            # TODO
-            return HttpResponse("<p>błąd: Otrzymano nieoczekiwany formularz.</p>")
+            result_message += "<p>błąd: Otrzymano nieoczekiwany formularz.</p>"
 
         if form.is_valid():
             result_message = "Operacja zakończona sukcesem."
             form.save()
         else:
-            result_message = form.errors
+            result_message += form.errors
 
         context = {
             'author_form': author_form,
@@ -174,10 +172,10 @@ class ImportView(View):
         url_query = '?q='
 
         if form.is_valid():
-            result = self.append_to_url_query(form, 'q', url_query, True)
+            result = append_to_url_query(form, 'q', url_query, True)
             fields_to_add = list(form.cleaned_data.keys())[1:]  # All fields except q field
             for field in fields_to_add:
-                result = self.append_to_url_query(form, field, result)
+                result = append_to_url_query(form, field, result)
             result_url = base_url + result
 
             response = requests.get(result_url)
@@ -224,30 +222,6 @@ class ImportView(View):
                 return None
         return output
 
-    def append_to_url_query(self, form, key, query_string, q=False):
-        """
-        Appends key correctly to the query_string.
-        :param form: Form object containing input data from user
-        :param key: String, name of the field to be added to query string
-        :param query_string: String, query string contains already created query string. Data will be appended to it
-        :param q: Boolean informing whetever this is a first, mandatory parameter, or not.
-        :return query_string_helper: string result containing created query string
-        """
-        keywords = str(form.cleaned_data[key]).strip().split()  # All keywords from single field in form of a list
-        query_string_helper = query_string
-        for index, keyword in enumerate(keywords):
-            if not keyword or keyword == "None":
-                continue
-            match index:
-                case 0:
-                    if q:
-                        query_string_helper = f'{query_string_helper}{keyword}'
-                    else:
-                        query_string_helper = f'{query_string_helper}+{key}:{keyword}'
-                case _:
-                    query_string_helper = f'{query_string_helper}+{keyword}'
-        return query_string_helper
-
 
 class ImportSingleBookView(View):
     def post(self, request):
@@ -266,7 +240,7 @@ class ImportSingleBookView(View):
             except Author.DoesNotExist:
                 author = Author.objects.create(author=book_author)
 
-        parsed = self.check_date_format(book_publication_date)
+        parsed = check_date_format(book_publication_date)
         date_correct_format, date_filter_format = parsed[0], parsed[1]
 
         Publication.objects.create(title=book_title,
@@ -281,27 +255,4 @@ class ImportSingleBookView(View):
         result_message = f"Zaimportowano książkę {book_title}."
         context = {'form': form, 'result_message': result_message}
         return render(request, 'books/import_book_form.html', context)
-
-    def check_date_format(self, input_date):
-        """
-        Attempts to detect date format and create datetime object, in one of few expected formats.
-        If no format is correct, it returns None
-        :param input_date: date in string format
-        :return date: list, where first element is converted date, a datetime.datetime object
-                      , second element is date format to be used for date filter in the template.
-        """
-        possible_formats = {
-            '%Y-%m-%d': 'd.m.Y',
-            '%Y-%m': 'm.Y',
-            '%Y': 'Y'
-        }
-
-        for possible_format in possible_formats.keys():
-            try:
-                date = datetime.strptime(input_date, possible_format)
-            except ValueError:
-                pass
-            else:
-                return [date, possible_formats[possible_format]]
-        return None
 
