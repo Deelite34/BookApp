@@ -68,17 +68,6 @@
     </div>
 </form>
 
-
-
-
-
-
-
-
-
-
-
-
 {% if result_message %}
 <div class="text-center">{{ result_message }}</div>
 {% endif %}
@@ -105,9 +94,9 @@
             {% else %} {{ book.title }} {% endif %}
         </td>
         <td>
-            {% if not book.author.author or book.author.author == 'None' %}
+            {% if not book.author or book.author == 'None' %}
             Brak danych
-            {% else %} {{book.author.author}} {% endif %}
+            {% else %} {{book.author}} {% endif %}
         </td>
         <th>
           {% if not book.publication_date or book.publication_date == 'None' %}
@@ -135,7 +124,7 @@
             {% else %} {{ book.language }} {% endif %}
         </td>
         <td>
-            <form action="{% url 'import_book' book.title book.author book.publication_date book.isbn book.page_count book.book_cover book.language %}" method="POST">
+            <form action="{% url 'import_book' %}?book_title={{book.title}}&book_author={{book.author}}&publication_date={{book.publication_date}}&book_isbn={{book.isbn}}&page_count={{book.page_count}}&book_cover={{book.book_cover}}&book_language={{book.language}}" method="POST">
                 {% csrf_token %}
                 <input class="btn btn-success" type="submit" value="Dodaj"/>
             </form>

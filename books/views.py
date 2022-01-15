@@ -1,8 +1,7 @@
 from datetime import datetime
-
 import requests
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import View
 
@@ -251,8 +250,15 @@ class ImportView(View):
 
 
 class ImportSingleBookView(View):
-    def post(self, request, book_title, book_author, book_publication_date, book_isbn, book_page_count, book_cover,
-             book_language):
+    def post(self, request):
+        book_title = request.GET.get('book_title')
+        book_author = request.GET.get('book_author')
+        book_publication_date = request.GET.get('publication_date')
+        book_isbn = request.GET.get('book_isbn')
+        page_count = None if request.GET.get('page_count') == 'None' else request.GET.get('page_count')
+        book_cover = request.GET.get('book_cover')
+        book_language = request.GET.get('book_language')
+
         form = SearchForImportBookForm()
         if book_author:
             try:
@@ -268,7 +274,7 @@ class ImportSingleBookView(View):
                                    publication_date=date_correct_format,
                                    publication_date_type=date_filter_format,
                                    isbn=book_isbn,
-                                   page_count=None if book_page_count == 'None' else book_page_count,
+                                   page_count=page_count,
                                    book_cover=book_cover,
                                    language=book_language)
 
@@ -298,3 +304,4 @@ class ImportSingleBookView(View):
             else:
                 return [date, possible_formats[possible_format]]
         return None
+
