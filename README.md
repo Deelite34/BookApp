@@ -2,7 +2,8 @@
 
 ## BookApp
 Django project, allowing user to list, create, edit, delete, search and import books from google book api.
-Uses bootstrap for frontend, and also offers rest api. Interface uses Polish language.
+Uses bootstrap for frontend, and also offers rest api.  
+Interface text uses Polish language.
 
 # Features
 - Uses Django, DRF, and bootstrap
@@ -19,8 +20,8 @@ Todo
 create virtual environment `python -m venv venv_bookapp`  
 launch virtual environment `.\venv_bookapp\scripts\activate`  
 Install required modules `pip install -r requirements.txt`  
-Run app locally once with `python manage.py runserver`
 Apply migrations `python manage.py migrate`  
+Run app locally once with `python manage.py runserver`  
 
 ## Tests
 Tests using django unittest module can be ran with `python manage.py test`
