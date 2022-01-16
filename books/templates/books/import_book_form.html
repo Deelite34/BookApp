@@ -103,10 +103,10 @@
             {% else %} {{book.author}} {% endif %}
         </td>
         <th>
-            {% if not book.publication_date or book.publication_date == 'None'
-            %}
+            {% if not book.publication_date or book.publication_date == 'None' %}
             Brak danych
-            {% else %} {{ book.publication_date }} {% endif %}
+            {% else %} {{ book.publication_date }}
+            {% endif %}
         </th>
         <td>
             {% if not book.isbn or book.isbn == 'None' %}
@@ -121,8 +121,8 @@
         <td>
             {% if not book.book_cover or book.book_cover == 'None' %}
             Brak danych
-            {% else %}<a href="{{ book.book_cover }}">{{book.book_cover}}</a>{%
-            endif %}
+            {% else %}<a href="{{ book.book_cover }}">{{book.book_cover}}</a>
+            {% endif %}
         </td>
         <td>
             {% if not book.language or book.language == 'None' %}
