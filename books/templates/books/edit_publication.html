@@ -3,70 +3,76 @@
 
 {% block content %}
 <h2 class="mx-auto my-3 w-50 text-center">Edycja publikacji</h2>
-<form action="" method="post">
-    {% csrf_token %}
-    <div class="w-75 mx-auto text-center">
-        <form action="" method="post">
-            {% csrf_token %}
-            <div class="form-group row my-2">
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.title.id_for_label }}">
-                        {{ form.title.label_tag }}</label>
-                    {% render_field form.title %}
-                </div>
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.author.id_for_label }}">
-                        {{ form.author.label_tag }}</label>
-                    {% render_field form.author %}
-                </div>
-            </div>
-            <div class="form-group row my-2">
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.publication_date.id_for_label }}">
-                        {{ form.publication_date.label_tag }}</label>
-                    {% render_field form.publication_date %}
-                </div>
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3"
-                           for="{{ form.publication_date_type.id_for_label }}">
-                        {{ form.publication_date_type.label_tag }}</label>
-                    {% render_field form.publication_date_type %}
-                </div>
-            </div>
-            <div class="form-group row my-2">
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.isbn.id_for_label }}">
-                        {{ form.isbn.label_tag }}</label>
-                    {% render_field form.isbn %}
-                </div>
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.page_count.id_for_label }}">
-                        {{ form.page_count.label_tag }}</label>
-                    {% render_field form.page_count %}
-                </div>
-            </div>
-            <div class="form-group row my-2">
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.book_cover.id_for_label }}">
-                        {{ form.book_cover.label_tag }}</label>
-                    {% render_field form.book_cover %}
-                </div>
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.language.id_for_label }}">
-                        {{ form.language.label_tag }}</label>
-                    {% render_field form.language %}
-                </div>
-            </div>
-            {% for field in form.visible_fields %}
-            {% for error in field.errors %}
-            <span>{{ error }}</span>
-            {% endfor %}
-            {% endfor %}
 
-            <input class="btn btn-primary w-25 my-4" type="submit" value="Edytuj">
-        </form>
-    </div>
-</form>
+<div class="w-75 mx-auto text-center">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.title.id_for_label }}">
+                    {{ form.title.label_tag }}</label>
+                {% render_field form.title %}
+            </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.author.id_for_label }}">
+                    {{ form.author.label_tag }}</label>
+                {% render_field form.author %}
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.publication_date.id_for_label }}">
+                    {{ form.publication_date.label_tag }}</label>
+                {% render_field form.publication_date %}
+            </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.publication_date_type.id_for_label }}">
+                    {{ form.publication_date_type.label_tag }}</label>
+                {% render_field form.publication_date_type %}
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.isbn.id_for_label }}">
+                    {{ form.isbn.label_tag }}</label>
+                {% render_field form.isbn %}
+            </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.page_count.id_for_label }}">
+                    {{ form.page_count.label_tag }}</label>
+                {% render_field form.page_count %}
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.book_cover.id_for_label }}">
+                    {{ form.book_cover.label_tag }}</label>
+                {% render_field form.book_cover %}
+            </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.language.id_for_label }}">
+                    {{ form.language.label_tag }}</label>
+                {% render_field form.language %}
+            </div>
+        </div>
+        {% for field in form.visible_fields %}
+        {% for error in field.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+        {% endfor %}
+
+        <input class="btn btn-primary w-25 my-4" type="submit" value="Edytuj">
+    </form>
+</div>
+
 <div class="text-center">{{ result_message }}</div>
 
 {% endblock content %}

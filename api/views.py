@@ -1,17 +1,15 @@
-from django.shortcuts import render
-
-# Create your views here.
-from rest_framework import filters
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from api.filters import PublicationFilter, AuthorSearch, PublicationSearch
 from api.serializers import PublicationSerializer, AuthorSerializer
 from books.models import Publication, Author
-from api.filters import PublicationFilter, AuthorSearch, PublicationSearch
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets
 
 
 class AuthorFilterViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Read only endpoint, allowing user to filter authors using query string, by id or name
+    Read only endpoint, allowing user to filter authors using query strings,
+    by id or name.
+    Use by adding ?paramname=value&otherparam=othervalue to filter url.
     """
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
@@ -21,8 +19,10 @@ class AuthorFilterViewSet(viewsets.ReadOnlyModelViewSet):
 
 class PublicationFilterViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Read only endpoint, allowing user to filter publications by id, author, title, language or publication_date.
-    Publication date can be filtered
+    Read only endpoint, allowing user to filter publications by id, author,
+    title, language or publication_date.
+    Publication date can be filtered only by publication_date
+    Use by adding ?paramname=value&otherparam=othervalue to filter url.
     """
     queryset = Publication.objects.all()
     serializer_class = PublicationSerializer
@@ -32,7 +32,8 @@ class PublicationFilterViewSet(viewsets.ReadOnlyModelViewSet):
 
 class AuthorSearchViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Read only endpoint, allowing user to search through Author model fields using search parameter,
+    Read only endpoint, allowing user to search through Author model fields
+    using search parameter,
     using query string. To use, include search=<value> in query string.
     """
     queryset = Author.objects.all()
@@ -42,7 +43,8 @@ class AuthorSearchViewSet(viewsets.ReadOnlyModelViewSet):
 
 class PublicationSearchViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Read only endpoint, allowing user to search through Publication model fields using search parameter,
+    Read only endpoint, allowing user to search through Publication model
+    fields using search parameter,
     using query string. To use, include search=<value> in query string.
     """
     queryset = Publication.objects.all()
@@ -52,7 +54,8 @@ class PublicationSearchViewSet(viewsets.ReadOnlyModelViewSet):
 
 class AuthorViewSet(viewsets.ModelViewSet):
     """
-    Endpoint allowing list, retrieve, create, put, delete operation on authors
+    Endpoint allowing list, retrieve, create, put, delete, update operations
+    on authors
     """
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
@@ -60,9 +63,8 @@ class AuthorViewSet(viewsets.ModelViewSet):
 
 class PublicationViewSet(viewsets.ModelViewSet):
     """
-    Endpoint allowing list, retrieve, create, put, delete operation on publications
+    Endpoint allowing list, retrieve, create, put, delete operations on
+    publications
     """
     queryset = Publication.objects.all()
     serializer_class = PublicationSerializer
-
-

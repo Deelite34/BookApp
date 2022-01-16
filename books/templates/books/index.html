@@ -8,7 +8,8 @@
         {% csrf_token %}
         {% for field in form.visible_fields %}
         <div class="form-group row my-3">
-            <label class="col-sm-3 col-form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <label class="col-sm-3 col-form-label"
+                   for="{{ field.id_for_label }}">{{ field.label }}</label>
             {{ field|add_class:'col-sm-7' }}
             {% for error in field.errors %}
             <span>{{ error }}</span>
@@ -41,7 +42,7 @@
     <tbody class="small">
     {% for book in books %}
     <tr class="align-middle">
-        <td scope="row">
+        <td>
             {% if not book.title or book.title == 'None' %}
             Brak danych
             {% else %} {{ book.title }} {% endif %}
@@ -52,9 +53,11 @@
             {% else %} {{book.author.author}} {% endif %}
         </td>
         <td>
-            {% if not book.publication_date or book.publication_date == 'None' %}
+            {% if not book.publication_date or book.publication_date == 'None'
+            %}
             Brak danych
-            {% else %} {{ book.publication_date|date:book.publication_date_type}} {% endif %}
+            {% else %} {{
+            book.publication_date|date:book.publication_date_type}} {% endif %}
         </td>
         <td>
             {% if not book.isbn or book.isbn == 'None' %}
@@ -69,7 +72,8 @@
         <td>
             {% if not book.book_cover or book.book_cover == 'None' %}
             Brak danych
-            {% else %}<a href="{{ book.book_cover }}">{{book.book_cover}}</a>{% endif %}
+            {% else %}<a href="{{ book.book_cover }}">{{book.book_cover}}</a>{%
+            endif %}
         </td>
         <td>
             {% if not book.language or book.language == 'None' %}

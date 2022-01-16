@@ -6,14 +6,21 @@ from django.db.models import Q
 class PublicationFilter(django_filters.FilterSet):
     """
     Filter allowing filtering by mostly the same fields as in index page.
-    Publication date can be filtered by publication_date_before or publication_date_after,
-    or both at the same time to indicate range.
+    Argument for publication date is a date in YYYY-MM-DD format.
+    It can be filtered in 3 ways. Use publication_date for exact date,
+    publication_before or publication_after for filtering before, and after
+    specific date.
+    Before and after filters can be used as the same time for a date range.
     """
-    publication_date = django_filters.DateFromToRangeFilter()
+    # Like publication_date, but to be used only as publication_after or
+    # publication_before (date) param
+    publication = django_filters.DateFromToRangeFilter(
+        field_name='publication_date')
 
     class Meta:
         model = Publication
-        fields = ['id', 'author', 'title', 'language', 'publication_date']
+        fields = ['id', 'author', 'title', 'language', 'publication_date',
+                  'publication']
 
 
 class AuthorSearch(django_filters.FilterSet):
@@ -29,9 +36,11 @@ class AuthorSearch(django_filters.FilterSet):
     def search_fields(self, queryset, name, value):
         """
         Searches through all Author field using OR operator from django Q
+        expression
         :param queryset: queryset that we are searching, originating from view
         :param name: query string field name. Here it is 'search'
-        :param value: inputed value that will be used to search through model fields
+        :param value: inputed value that will be used to search through
+        model fields
         :return author_queryset: end result queryset used for searching
         """
         q_query = Q()
@@ -56,10 +65,12 @@ class PublicationSearch(django_filters.FilterSet):
 
     def search_fields(self, queryset, name, value):
         """
-        Searches through all Publication field using OR operator from django Q
+        Searches through all Publication field using OR operator from django
+        Q expression
         :param queryset: queryset that we are searching, originating from view
         :param name: query string field name. Here it is 'search'
-        :param value: inputed value that will be used to search through model fields
+        :param value: inputed value that will be used to search through
+        model fields
         :return publication_queryset: end result queryset used for searching
         """
         q_query = Q()
@@ -73,7 +84,6 @@ class PublicationSearch(django_filters.FilterSet):
             q_query |= Q(author__author__icontains=value)
             q_query |= Q(isbn__icontains=value)
             q_query |= Q(language__icontains=value)
-            # TODO szukanie daty w jednym z 3 formatów
 
         publication_queryset = publication_queryset.filter(q_query)
         return publication_queryset

@@ -9,7 +9,8 @@ class AuthorAdmin(admin.ModelAdmin):
 
 
 class PublicationAdmin(admin.ModelAdmin):
-    list_display = ('id', 'author', 'title', 'isbn', 'publication_date', 'publication_date_type',
+    list_display = ('id', 'author', 'title', 'isbn', 'publication_date',
+                    'publication_date_type',
                     'book_cover', 'language', 'page_count')
 
 

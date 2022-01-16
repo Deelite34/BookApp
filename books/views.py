@@ -1,11 +1,14 @@
+import urllib
 from datetime import datetime
+
 import requests
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 from django.views import View
 
-from .forms import form_date_errors, PublicationSearchForm, AuthorForm, PublicationForm, SearchForImportBookForm
+from .forms import form_date_errors, PublicationSearchForm, AuthorForm, \
+    PublicationForm, SearchForImportBookForm
 from .models import Publication, Author
 from .utils import check_date_format, append_to_url_query
 
@@ -34,11 +37,16 @@ class ListPublicationsView(View):
         books = Publication.objects.select_related('author')
 
         if form.is_valid():
-            title = form.cleaned_data['title'].strip() if form.data['title'].strip() else None
-            author = form.cleaned_data['author'].strip() if form.data['author'].strip() else None
-            language = form.cleaned_data['language'].strip() if form.data['language'].strip() else None
-            published_from = str(form.cleaned_data['published_from']) if form.data['published_from'].strip() else None
-            published_to = str(form.cleaned_data['published_to']) if form.data['published_to'].strip() else None
+            title = form.cleaned_data['title'].strip() if form.data[
+                'title'].strip() else None
+            author = form.cleaned_data['author'].strip() if form.data[
+                'author'].strip() else None
+            language = form.cleaned_data['language'].strip() if form.data[
+                'language'].strip() else None
+            published_from = str(form.cleaned_data['published_from']) if \
+                form.data['published_from'].strip() else None
+            published_to = str(form.cleaned_data['published_to']) if form.data[
+                'published_to'].strip() else None
 
             queryset = Publication.objects.select_related('author')
 
@@ -62,7 +70,8 @@ class ListPublicationsView(View):
 
         # Add helpful informations about form errors to context
         if form_date_errors['invalid'] in str(form.errors):
-            error_string = "Błąd: data powinna używać formatu [dzień].[miesiąc].[rok] " \
+            error_string = "Błąd: data powinna używać formatu [dzień].[" \
+                           "miesiąc].[rok] " \
                            "na przykład: 23.02.2015"
             context['form_date_error'] = error_string
 
@@ -79,7 +88,8 @@ class CreateFormsView(View):
         author_form = AuthorForm()
         publication_form = PublicationForm()
 
-        context = {'author_form': author_form, 'publication_form': publication_form}
+        context = {'author_form': author_form,
+                   'publication_form': publication_form}
         return render(request, 'books/add_forms.html', context=context)
 
     def post(self, request):
@@ -90,13 +100,14 @@ class CreateFormsView(View):
         """
         author_form = AuthorForm()
         publication_form = PublicationForm()
-        expected_publication_form_fields = ('title', 'author', 'publication_date', 'publication_date_type',
-                                            'isbn', 'page_count', 'book_cover', 'language')
+        expected_publication_form_fields = (
+            'title', 'author', 'publication_date', 'publication_date_type',
+            'isbn', 'page_count', 'book_cover', 'language')
         result_message = ""
-
         if 'author' in request.POST.keys() and len(request.POST.keys()) == 2:
             form = author_form = AuthorForm(request.POST)
-        elif all(field in request.POST.keys() for field in expected_publication_form_fields):
+        elif all(field in request.POST.keys() for field in
+                 expected_publication_form_fields):
             form = publication_form = PublicationForm(request.POST)
         else:
             result_message += "<p>błąd: Otrzymano nieoczekiwany formularz.</p>"
@@ -105,7 +116,7 @@ class CreateFormsView(View):
             result_message = "Operacja zakończona sukcesem."
             form.save()
         else:
-            result_message += form.errors
+            result_message = form.errors
 
         context = {
             'author_form': author_form,
@@ -138,12 +149,18 @@ class EditPublicationFormView(View):
         publication = get_object_or_404(Publication, id=book_id)
         form = PublicationForm(request.POST, instance=publication)
         context = {}
-        if form.is_valid:
+        if form.is_valid():
             form.save()
-            context['form'] = PublicationForm(instance=publication)  # Display updated values to user
-            context['result_message'] = "Publikacja pomyślnie zmodyfikowana."  # Display result to user
+            context['form'] = PublicationForm(
+                instance=publication)  # Display updated values to user
+            # Display result to user
+            context[
+                'result_message'] = "Publikacja pomyślnie zmodyfikowana."
+
             return render(request, 'books/edit_publication.html', context)
-        context['result_message'] = "Nie udało się zmodyfikować publikacji. Sprawdź pola i spróbuj ponownie."
+        context[
+            'result_message'] = "Nie udało się zmodyfikować publikacji. " \
+                                "Sprawdź pola i spróbuj ponownie."
         return render(request, 'books/edit_publication.html', context)
 
 
@@ -173,7 +190,8 @@ class ImportView(View):
 
         if form.is_valid():
             result = append_to_url_query(form, 'q', url_query, True)
-            fields_to_add = list(form.cleaned_data.keys())[1:]  # All fields except q field
+            fields_to_add = list(form.cleaned_data.keys())[
+                            1:]  # All fields except mandatory q field
             for field in fields_to_add:
                 result = append_to_url_query(form, field, result)
             result_url = base_url + result
@@ -183,7 +201,8 @@ class ImportView(View):
 
             # No books were found, and response wont contain 'items' key
             if 'items' not in response_dict.keys():
-                return render(request, 'books/import_book_form.html', {'form': form})
+                return render(request, 'books/import_book_form.html',
+                              {'form': form})
             found_books = []
 
             for item in response_dict['items']:
@@ -193,11 +212,19 @@ class ImportView(View):
                 except KeyError:
                     author = None
 
-                publication_date = self.get_value_or_none(item, ['volumeInfo', 'publishedDate'])
-                isbn = self.get_value_or_none(item, ['volumeInfo', 'industryIdentifiers', 0, 'identifier'])
-                page_count = self.get_value_or_none(item, ['volumeInfo', 'pageCount'])
-                book_cover = self.get_value_or_none(item, ['volumeInfo', 'imageLinks', 'thumbnail'])
-                language = self.get_value_or_none(item, ['volumeInfo', 'language'])
+                publication_date = self.get_value_or_none(item,
+                                                          ['volumeInfo',
+                                                           'publishedDate'])
+                isbn = self.get_value_or_none(item, ['volumeInfo',
+                                                     'industryIdentifiers', 0,
+                                                     'identifier'])
+                page_count = self.get_value_or_none(item, ['volumeInfo',
+                                                           'pageCount'])
+                book_cover = self.get_value_or_none(item, ['volumeInfo',
+                                                           'imageLinks',
+                                                           'thumbnail'])
+                language = self.get_value_or_none(item,
+                                                  ['volumeInfo', 'language'])
 
                 found_books.append(
                     {
@@ -229,9 +256,21 @@ class ImportSingleBookView(View):
         book_author = request.GET.get('book_author')
         book_publication_date = request.GET.get('publication_date')
         book_isbn = request.GET.get('book_isbn')
-        page_count = None if request.GET.get('page_count') == 'None' else request.GET.get('page_count')
+        page_count = None if request.GET.get(
+            'page_count') == 'None' else request.GET.get('page_count')
         book_cover = request.GET.get('book_cover')
         book_language = request.GET.get('book_language')
+
+        # book cover received from api can contain more query strings,
+        # not picked up in book_cover variable above
+        # code below fixes that issue and adds missing params to that variable
+        url = request.GET.urlencode()
+        query_strings = urllib.parse.parse_qs(url)
+        additional_params = ('printsec', 'img', 'zoom', 'edge', 'source')
+        for param in additional_params:
+            param_or_none = query_strings.get(param)
+            if param_or_none:
+                book_cover += f"&{param}={param_or_none[0]}"
 
         form = SearchForImportBookForm()
         if book_author:
@@ -242,7 +281,6 @@ class ImportSingleBookView(View):
 
         parsed = check_date_format(book_publication_date)
         date_correct_format, date_filter_format = parsed[0], parsed[1]
-
         Publication.objects.create(title=book_title,
                                    author=author,
                                    publication_date=date_correct_format,
@@ -255,4 +293,3 @@ class ImportSingleBookView(View):
         result_message = f"Zaimportowano książkę {book_title}."
         context = {'form': form, 'result_message': result_message}
         return render(request, 'books/import_book_form.html', context)
-

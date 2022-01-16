@@ -6,65 +6,69 @@
 <form action="{% url 'import' %}" method="post">
     {% csrf_token %}
     <div class="w-75 mx-auto text-center">
-        <form action="" method="post">
-            {% csrf_token %}
-            <div class="form-group row my-2">
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.q.id_for_label }}">
-                        {{ form.q.label_tag }}</label>
-                    {% render_field form.q %}
-                </div>
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.intitle.id_for_label }}">
-                        {{ form.intitle.label_tag }}</label>
-                    {% render_field form.intitle %}
-                </div>
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.q.id_for_label }}">
+                    {{ form.q.label_tag }}</label>
+                {% render_field form.q %}
             </div>
-            <div class="form-group row my-2">
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.inauthor.id_for_label }}">
-                        {{ form.inauthor.label_tag }}</label>
-                    {% render_field form.inauthor %}
-                </div>
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3"
-                           for="{{ form.inpublisher.id_for_label }}">
-                        {{ form.inpublisher.label_tag }}</label>
-                    {% render_field form.inpublisher %}
-                </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.intitle.id_for_label }}">
+                    {{ form.intitle.label_tag }}</label>
+                {% render_field form.intitle %}
             </div>
-            <div class="form-group row my-2">
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.subject.id_for_label }}">
-                        {{ form.subject.label_tag }}</label>
-                    {% render_field form.subject %}
-                </div>
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.isbn.id_for_label }}">
-                        {{ form.isbn.label_tag }}</label>
-                    {% render_field form.isbn %}
-                </div>
+        </div>
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.inauthor.id_for_label }}">
+                    {{ form.inauthor.label_tag }}</label>
+                {% render_field form.inauthor %}
             </div>
-            <div class="form-group row my-2">
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.lccn.id_for_label }}">
-                        {{ form.lccn.label_tag }}</label>
-                    {% render_field form.lccn %}
-                </div>
-                <div class="col">
-                    <label class="col-sm-4 col-form-label mx-3" for="{{ form.aclc.id_for_label }}">
-                        {{ form.aclc.label_tag }}</label>
-                    {% render_field form.aclc %}
-                </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.inpublisher.id_for_label }}">
+                    {{ form.inpublisher.label_tag }}</label>
+                {% render_field form.inpublisher %}
             </div>
-            {% for field in form.visible_fields %}
-            {% for error in field.errors %}
-            <span>{{ error }}</span>
-            {% endfor %}
-            {% endfor %}
+        </div>
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.subject.id_for_label }}">
+                    {{ form.subject.label_tag }}</label>
+                {% render_field form.subject %}
+            </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.isbn.id_for_label }}">
+                    {{ form.isbn.label_tag }}</label>
+                {% render_field form.isbn %}
+            </div>
+        </div>
+        <div class="form-group row my-2">
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.lccn.id_for_label }}">
+                    {{ form.lccn.label_tag }}</label>
+                {% render_field form.lccn %}
+            </div>
+            <div class="col">
+                <label class="col-sm-4 col-form-label mx-3"
+                       for="{{ form.aclc.id_for_label }}">
+                    {{ form.aclc.label_tag }}</label>
+                {% render_field form.aclc %}
+            </div>
+        </div>
+        {% for field in form.visible_fields %}
+        {% for error in field.errors %}
+        <span>{{ error }}</span>
+        {% endfor %}
+        {% endfor %}
 
-            <input class="btn btn-primary w-25 my-4" type="submit" value="Szukaj">
-        </form>
+        <input class="btn btn-primary w-25 my-4" type="submit" value="Szukaj">
     </div>
 </form>
 
@@ -88,7 +92,7 @@
     <tbody class="small">
     {% for book in found_books %}
     <tr class="align-middle">
-        <td scope="row">
+        <td>
             {% if not book.title or book.title == 'None' %}
             Brak danych
             {% else %} {{ book.title }} {% endif %}
@@ -99,9 +103,10 @@
             {% else %} {{book.author}} {% endif %}
         </td>
         <th>
-          {% if not book.publication_date or book.publication_date == 'None' %}
-             Brak danych
-          {% else %} {{ book.publication_date }} {% endif %}
+            {% if not book.publication_date or book.publication_date == 'None'
+            %}
+            Brak danych
+            {% else %} {{ book.publication_date }} {% endif %}
         </th>
         <td>
             {% if not book.isbn or book.isbn == 'None' %}
@@ -116,7 +121,8 @@
         <td>
             {% if not book.book_cover or book.book_cover == 'None' %}
             Brak danych
-            {% else %}<a href="{{ book.book_cover }}">{{book.book_cover}}</a>{% endif %}
+            {% else %}<a href="{{ book.book_cover }}">{{book.book_cover}}</a>{%
+            endif %}
         </td>
         <td>
             {% if not book.language or book.language == 'None' %}
@@ -124,7 +130,8 @@
             {% else %} {{ book.language }} {% endif %}
         </td>
         <td>
-            <form action="{% url 'import_book' %}?book_title={{book.title}}&book_author={{book.author}}&publication_date={{book.publication_date}}&book_isbn={{book.isbn}}&page_count={{book.page_count}}&book_cover={{book.book_cover}}&book_language={{book.language}}" method="POST">
+            <form action="{% url 'import_book' %}?book_title={{book.title}}&book_author={{book.author}}&publication_date={{book.publication_date}}&book_isbn={{book.isbn}}&page_count={{book.page_count}}&book_cover={{book.book_cover}}&book_language={{book.language}}"
+                  method="POST">
                 {% csrf_token %}
                 <input class="btn btn-success" type="submit" value="Dodaj"/>
             </form>
