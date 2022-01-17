@@ -1,4 +1,5 @@
 from django.urls import path, include
+from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework import routers
 
 from .views import PublicationFilterViewSet, AuthorFilterViewSet, \

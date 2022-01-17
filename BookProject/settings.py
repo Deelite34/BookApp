@@ -1,9 +1,9 @@
-from dotenv import load_dotenv, find_dotenv
 import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from django.core.management.utils import get_random_secret_key
+from dotenv import load_dotenv, find_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -32,8 +32,11 @@ INSTALLED_APPS = [
     'books',
     'api',
 
-    'django_filters',
-    'widget_tweaks',  # For easier adding css classess to form elements
+    'drf_spectacular',  # API documentation
+    'drf_spectacular_sidecar',  # required for Django collectstatic discovery
+    'django_filters',  # Filter and search in API
+    'widget_tweaks',  # For easier adding css classess to form tags
+
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -134,4 +137,15 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# https://drf-spectacular.readthedocs.io/en/latest/settings.html
+SPECTACULAR_SETTINGS = {
+    'SWAGGER_UI_DIST': 'SIDECAR',  # shorthand to use the sidecar instead
+    'SWAGGER_UI_FAVICON_HREF': 'SIDECAR',
+    'REDOC_DIST': 'SIDECAR',
+    'TITLE': 'BookApp',
+    'DESCRIPTION': 'API documentation for BookApp.',
+    'VERSION': '1.0.0'
 }

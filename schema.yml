@@ -1,0 +1,737 @@
+openapi: 3.0.3
+info:
+  title: BookApp
+  version: 1.0.0
+  description: API documentation for BookApp.
+paths:
+  /api/authors/:
+    get:
+      operationId: api_authors_list
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete, update operations
+        on authors.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+          description: ''
+    post:
+      operationId: api_authors_create
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete, update operations
+        on authors.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Author'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Author'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Author'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+  /api/authors/{id}/:
+    get:
+      operationId: api_authors_retrieve
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete, update operations
+        on authors.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this author.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+    put:
+      operationId: api_authors_update
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete, update operations
+        on authors.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this author.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Author'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Author'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Author'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+    patch:
+      operationId: api_authors_partial_update
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete, update operations
+        on authors.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this author.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthor'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthor'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthor'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+    delete:
+      operationId: api_authors_destroy
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete, update operations
+        on authors.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this author.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/filter/authors/:
+    get:
+      operationId: api_filter_authors_list
+      description: |-
+        Read only endpoint, allowing user to filter authors using query strings,
+        by id or name.
+        Use by adding '?firstparametername=value' then &otherparam=othervalue
+        for each next parameter to filter url.
+        Fields that can be used for filtering include: 'id' and 'author'.
+      parameters:
+      - in: query
+        name: author
+        schema:
+          type: string
+      - in: query
+        name: id
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+          description: ''
+  /api/filter/authors/{id}/:
+    get:
+      operationId: api_filter_authors_retrieve
+      description: |-
+        Read only endpoint, allowing user to filter authors using query strings,
+        by id or name.
+        Use by adding '?firstparametername=value' then &otherparam=othervalue
+        for each next parameter to filter url.
+        Fields that can be used for filtering include: 'id' and 'author'.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this author.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+  /api/filter/publications/:
+    get:
+      operationId: api_filter_publications_list
+      description: |-
+        Read only endpoint, allowing user to filter publications by id, author,
+        title, language or publication_date.
+        Publication date can be filtered only by publication_date
+        Use by adding '?firstparametername=value' then &otherparam=othervalue
+        for each next parameter to filter url.
+        Fields that can be used for filtering include:
+        'id', 'author', 'title', 'language', 'publication_date', and also
+        'publication_before' and 'publication_after' for after andbefore specific
+        date filtering.
+      parameters:
+      - in: query
+        name: author
+        schema:
+          type: integer
+      - in: query
+        name: id
+        schema:
+          type: integer
+      - in: query
+        name: language
+        schema:
+          type: string
+      - in: query
+        name: publication_after
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: publication_before
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: publication_date
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: title
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Publication'
+          description: ''
+  /api/filter/publications/{id}/:
+    get:
+      operationId: api_filter_publications_retrieve
+      description: |-
+        Read only endpoint, allowing user to filter publications by id, author,
+        title, language or publication_date.
+        Publication date can be filtered only by publication_date
+        Use by adding '?firstparametername=value' then &otherparam=othervalue
+        for each next parameter to filter url.
+        Fields that can be used for filtering include:
+        'id', 'author', 'title', 'language', 'publication_date', and also
+        'publication_before' and 'publication_after' for after andbefore specific
+        date filtering.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this publication.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Publication'
+          description: ''
+  /api/publications/:
+    get:
+      operationId: api_publications_list
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete operations on
+        publications.
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Publication'
+          description: ''
+    post:
+      operationId: api_publications_create
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete operations on
+        publications.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Publication'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Publication'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Publication'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Publication'
+          description: ''
+  /api/publications/{id}/:
+    get:
+      operationId: api_publications_retrieve
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete operations on
+        publications.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this publication.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Publication'
+          description: ''
+    put:
+      operationId: api_publications_update
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete operations on
+        publications.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this publication.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Publication'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Publication'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Publication'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Publication'
+          description: ''
+    patch:
+      operationId: api_publications_partial_update
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete operations on
+        publications.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this publication.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPublication'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPublication'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPublication'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Publication'
+          description: ''
+    delete:
+      operationId: api_publications_destroy
+      description: |-
+        Endpoint allowing list, retrieve, create, put, delete operations on
+        publications.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this publication.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/search/authors/:
+    get:
+      operationId: api_search_authors_list
+      description: |-
+        Read only endpoint, allowing user to search through all Author model fields
+        using search parameter with query string.
+        To use, add ?search=<value> to the url. Value can be any of author model
+        fields.
+      parameters:
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+          description: ''
+  /api/search/authors/{id}/:
+    get:
+      operationId: api_search_authors_retrieve
+      description: |-
+        Read only endpoint, allowing user to search through all Author model fields
+        using search parameter with query string.
+        To use, add ?search=<value> to the url. Value can be any of author model
+        fields.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this author.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Author'
+          description: ''
+  /api/search/publications/:
+    get:
+      operationId: api_search_publications_list
+      description: |-
+        Read only endpoint, allowing user to search through Publication model
+        fields using search parameter, with using query string.
+        To use, add ?search=<value> to the url. Value can be any of publication
+        model fields.
+      parameters:
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: Search
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Publication'
+          description: ''
+  /api/search/publications/{id}/:
+    get:
+      operationId: api_search_publications_retrieve
+      description: |-
+        Read only endpoint, allowing user to search through Publication model
+        fields using search parameter, with using query string.
+        To use, add ?search=<value> to the url. Value can be any of publication
+        model fields.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this publication.
+        required: true
+      tags:
+      - api
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Publication'
+          description: ''
+components:
+  schemas:
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        author:
+          type: string
+          maxLength: 200
+      required:
+      - author
+      - id
+    PatchedAuthor:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        author:
+          type: string
+          maxLength: 200
+    PatchedPublication:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 500
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        author:
+          type: integer
+          nullable: true
+        publication_date:
+          type: string
+          format: date
+          nullable: true
+        publication_date_type:
+          $ref: '#/components/schemas/PublicationDateTypeEnum'
+        isbn:
+          type: string
+          nullable: true
+          maxLength: 20
+        page_count:
+          type: integer
+          maximum: 50000
+          nullable: true
+        book_cover:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 500
+        language:
+          type: string
+          nullable: true
+          maxLength: 10
+    Publication:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 500
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        author:
+          type: integer
+          nullable: true
+        publication_date:
+          type: string
+          format: date
+          nullable: true
+        publication_date_type:
+          $ref: '#/components/schemas/PublicationDateTypeEnum'
+        isbn:
+          type: string
+          nullable: true
+          maxLength: 20
+        page_count:
+          type: integer
+          maximum: 50000
+          nullable: true
+        book_cover:
+          type: string
+          format: uri
+          nullable: true
+          maxLength: 500
+        language:
+          type: string
+          nullable: true
+          maxLength: 10
+      required:
+      - id
+      - publication_date_type
+      - title
+      - url
+    PublicationDateTypeEnum:
+      enum:
+      - Y
+      - m.Y
+      - d.m.Y
+      type: string
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
