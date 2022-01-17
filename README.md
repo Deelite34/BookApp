@@ -21,7 +21,7 @@ create virtual environment `python -m venv venv_bookapp`
 launch virtual environment `.\venv_bookapp\scripts\activate`  
 Install required modules `pip install -r requirements.txt`  
 Apply migrations `python manage.py migrate`  
-Run app locally once with `python manage.py runserver`  
+Run app `python manage.py runserver`  
 
 ## Tests
 Tests using django unittest module can be ran with `python manage.py test`
