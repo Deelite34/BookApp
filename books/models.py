@@ -21,7 +21,11 @@ class Author(models.Model):
 class Publication(models.Model):
     """
     Information about books specific publication.
+    In the project I use publication and book word interchangibly,
+    in the end they point to the same thing, which is this model, despite
+    having different meanings.
     """
+    # date type used in template, when |date filter is used.
     DATE_TYPES = [
         ('Y', 'Tylko rok'),
         ('m.Y', 'Miesiąc i rok '),

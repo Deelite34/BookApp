@@ -178,12 +178,25 @@ class DeletePublicationView(View):
 
 class ImportView(View):
     def get(self, request):
+        """
+        Import view, that displays form allowing user to search
+        external api for books to import.
+        :param request:
+        :return:
+        """
         form = SearchForImportBookForm()
         context = {'form': form}
 
         return render(request, 'books/import_book_form.html', context)
 
     def post(self, request):
+        """
+        Searches external api for books.
+        External url where data will be taken from is constructed using
+        query strings using every included form field.
+        :param request:
+        :return:
+        """
         form = SearchForImportBookForm(request.POST)
         base_url = 'https://www.googleapis.com/books/v1/volumes'
         url_query = '?q='
@@ -241,6 +254,19 @@ class ImportView(View):
         return render(request, 'books/import_book_form.html', context)
 
     def get_value_or_none(self, source_dict, params):
+        """
+        Iterates over source dictionary, step by step by using every single
+        key in param argument. If key in any moment of iteration does
+        not exist, it will return None.
+        :param source_dict: Dictionary imported from external google api
+        :param params:  list containing strings of each key we want to search.
+                        For example with params=['volumeInfo', 'publishedDate']
+                        function will return same result as in
+                        source_dict['volumeInfo']['publishedDate'] or None if
+                        key in any of steps doesn't exist.
+        :return output: if value is extracted successfully from source_dict
+        :return None: if KeyError occured during attempt to get value
+        """
         output = source_dict
         for param in params:
             try:
@@ -252,6 +278,12 @@ class ImportView(View):
 
 class ImportSingleBookView(View):
     def post(self, request):
+        """
+        Extracts query strings from url, creates publication, displays
+        main import page with success message.
+        :param request:
+        :return:
+        """
         book_title = request.GET.get('book_title')
         book_author = request.GET.get('book_author')
         book_publication_date = request.GET.get('publication_date')
@@ -263,7 +295,7 @@ class ImportSingleBookView(View):
 
         # book cover received from api can contain more query strings,
         # not picked up in book_cover variable above
-        # code below fixes that issue and adds missing params to that variable
+        # code below fixes that issue and adds missing params to it
         url = request.GET.urlencode()
         query_strings = urllib.parse.parse_qs(url)
         additional_params = ('printsec', 'img', 'zoom', 'edge', 'source')

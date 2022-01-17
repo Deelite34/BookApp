@@ -34,8 +34,8 @@ FIELDS = (
 
 def create_initial_data():
     """
-    Creates author with 2 books, and returns list
-    with [author, publication_1, publication_2
+    Creates author with 2 assigned books, and  and returns list
+    with [author_1, publication_1, publication_2, author_2]
     """
     author_1 = Author.objects.create(author=NAME)
 

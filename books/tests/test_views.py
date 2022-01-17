@@ -44,17 +44,17 @@ class IndexViewTest(TestCase):
         response_content = response.content.decode("UTF-8")
 
         self.assertEqual(response.status_code, 200)
-        for arg in SEARCH_FORM_FIELDS:  # Labels for search form fields
+        # Displaying labels for search form fields in the template
+        for arg in SEARCH_FORM_FIELDS:
             self.assertIn(arg, response_content)
-        # Displaying created publications in index page
+        # Displaying created publications
         for param in VISIBLE_PUBLICATION_PARAMS:
             self.assertIn(param, response_content)
 
     def test_post_index_page(self):
         """
         Post request in index page is used for searching database
-        for publications using specified
-        parameters
+        for publications using specified parameters
         """
         author = Author.objects.create(author=NAME)
         Publication.objects.create(title=TITLE, author=author,
@@ -272,6 +272,7 @@ class EditBookView(TestCase):
                                                  isbn=ISBN)
         success_msg = "Publikacja pomyślnie zmodyfikowana."
         url = reverse('edit', args=(publication.id,))
+
         response_post = CLIENT.post(url, edit_item_data)
         response_post_content = response_post.content.decode("UTF-8")
         publication = Publication.objects.get(title=TITLE_ALT,
