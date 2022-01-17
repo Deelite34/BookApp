@@ -6,13 +6,9 @@ import django_heroku
 from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv, find_dotenv
 
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
