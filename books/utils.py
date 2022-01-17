@@ -51,13 +51,12 @@ def append_to_url_query(form, key, query_string, q=False, test=False):
     for index, keyword in enumerate(keywords):
         if not keyword or keyword == "None":
             continue
-        match index:
-            case 0:
-                if q:
-                    query_string_helper = f'{query_string_helper}{keyword}'
-                else:
-                    query_string_helper = f'{query_string_helper}+{key}:' \
-                                          f'{keyword}'
-            case _:
-                query_string_helper = f'{query_string_helper}+{keyword}'
+        if index == 0:
+            if q:
+                query_string_helper = f'{query_string_helper}{keyword}'
+            else:
+                query_string_helper = f'{query_string_helper}+{key}:' \
+                                      f'{keyword}'
+        else:
+            query_string_helper = f'{query_string_helper}+{keyword}'
     return query_string_helper
