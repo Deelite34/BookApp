@@ -14,7 +14,7 @@ Interface text uses Polish language.
 - Tests with django unittest
 
 # Live preview
-Todo
+Website can be previewed on heroku: <a href="https://book-app-deelite.herokuapp.com/">https://book-app-deelite.herokuapp.com</a>
 
 # Installation
 create virtual environment `python -m venv venv_bookapp`  
