@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 from django.core.management.utils import get_random_secret_key
@@ -12,6 +13,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/static/'
+
+
 load_dotenv(find_dotenv('.env'))
 
 if os.path.exists('.env'):
@@ -22,9 +28,9 @@ else:
         f.write(f'SECRET_KEY={rand_key}\n')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.herokuapp.com'] # http://localhost:8080
 
 # Application definition
 
@@ -149,3 +155,5 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API documentation for BookApp.',
     'VERSION': '1.0.0'
 }
+
+django_heroku.settings(locals())
