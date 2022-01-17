@@ -27,4 +27,9 @@ Run app `python manage.py runserver`
 Tests using django unittest module can be ran with `python manage.py test`
 
 ## Endpoint documentation
-Todo
+Steps
+1. Download schema.yml and go to https://editor.swagger.io/  
+2. Import schema.yml file with file->import file
+Alternatively
+1. Copy content of schema.yml file and go to https://editor.swagger.io/
+2. Paste it in the editor on the left side 
