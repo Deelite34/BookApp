@@ -13,8 +13,6 @@ Interface text uses Polish language.
 - Rest API other than standard crud operations, allows user to search or filter books with use of query strings. Search endpoint accepts single 'search' keyword used to search all fields of author or book, while filter endpoint allows you to filter each field with addition of filtering publication_before and publication_after.
 - Tests with django unittest
 
-# Live preview
-Website can be previewed on heroku: <a href="https://book-app-deelite.herokuapp.com/">https://book-app-deelite.herokuapp.com</a>
 
 # Installation
 create virtual environment `python -m venv venv_bookapp`  
